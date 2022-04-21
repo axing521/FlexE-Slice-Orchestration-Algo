@@ -2,14 +2,15 @@
  * @creater:ACBash
  * @create_time:22-4-20 20:43:29
  * @last_modify:ACBash
- * @modify_time:22-4-20 20:44:57
- * @line_count:41
+ * @modify_time:22-4-21 15:37:33
+ * @line_count:42
  **/
 
-import { Colors, initializeColor } from "../lib/util";
+import { Colors, initializeColor } from "../lib/util.js";
 
 export default function BFS(graph, startNode){
     const adjList = graph.adjList;
+    const vertices = graph.vertices;
     const color = initializeColor(vertices);
     const queue = [];
     const delay = {};   //v到u的时延delay[u]

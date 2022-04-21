@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-20 14:23:6
  * @last_modify:ACBash
- * @modify_time:22-4-20 19:23:46
- * @line_count:10
+ * @modify_time:22-4-21 16:3:42
+ * @line_count:11
  **/
 
 /* all业务流用例 */
@@ -14,5 +14,6 @@ export const flow0 = {
     bandwidth: 25,
     delay: 20,
     startNode : "A",
-    endNode: "D"
+    endNode: "D",
+    allocate: {}
 }
