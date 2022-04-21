@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-4-21 16:37:29
- * @line_count:293
+ * @modify_time:22-4-21 16:48:6
+ * @line_count:296
  **/
 
 const Colors={
@@ -111,7 +111,7 @@ function orchestration(slices){
         console.log(`slice${count++} 映射成功`);   //ID?
         
         for(const flow of slice){
-            console.log(flow.path);
+            console.log(flow.path, flow.routeDelay + "ms");
             console.log(flow.allocate);
         }
     }
@@ -160,6 +160,7 @@ function allocateFlow(slice, flow, graph){
     }
 
     flow.path = minPath.path;
+    flow.routeDelay = minPath_delay;
 };
 
 function minPathFn(flow, graph){
@@ -272,30 +273,32 @@ function deleteEdge(graph, nodeM, nodeN){
     return 2;
 };
 
-orchestration(slices); //编排，返回切片是否编排成功，切片中流的传输路由，占用端口时隙情况。
-/* peekGroup(); //更新目前物理网络资源使用情况 */
+const peekGroup = () => {
+    let visited = new Set();
 
-let visited = new Set();
+    let s = "目前物理网络中所有链路上的PHYs使用情况:\n";
 
-let s = "目前物理网络中所有链路上的PHYs使用情况:\n";
+    for(const vertice of graph.vertices){
+        const neighbors = graph.adjList.get(vertice);
+        
+        for(const [neighbor, val] of neighbors){
+            if(visited.has(`${vertice}, ${neighbor}`) || visited.has(`${neighbor}, ${vertice}`)){
+                continue;
+            }
 
-for(const vertice of graph.vertices){
-    const neighbors = graph.adjList.get(vertice);
-    
-    for(const [neighbor, val] of neighbors){
-        if(visited.has(`${vertice}, ${neighbor}`) || visited.has(`${neighbor}, ${vertice}`)){
-            continue;
+            s += `${vertice}--${neighbor}:\n`;
+            s += `PHY0: ${val.PHYs[0]}\n`;
+            s += `PHY1: ${val.PHYs[1]}\n`;
+            s += `PHY2: ${val.PHYs[2]}\n`;
+            s += `PHY3: ${val.PHYs[3]}\n`;
+
+            visited.add(`${vertice}, ${neighbor}`);
+            visited.add(`${neighbor}, ${vertice}`);
         }
-
-        s += `${vertice}--${neighbor}:\n`;
-        s += `PHY0: ${val.PHYs[0]}\n`;
-        s += `PHY1: ${val.PHYs[1]}\n`;
-        s += `PHY2: ${val.PHYs[2]}\n`;
-        s += `PHY3: ${val.PHYs[3]}\n`;
-
-        visited.add(`${vertice}, ${neighbor}`);
-        visited.add(`${neighbor}, ${vertice}`);
     }
-}
 
-console.log(s);
+    console.log(s);
+};
+
+orchestration(slices); //编排，返回切片是否编排成功，切片中流的传输路由，占用端口时隙情况。
+peekGroup(); //更新目前物理网络资源使用情况
