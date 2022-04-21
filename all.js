@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-4-21 16:48:6
- * @line_count:296
+ * @modify_time:22-4-21 20:22:49
+ * @line_count:297
  **/
 
 const Colors={
@@ -163,6 +163,7 @@ function allocateFlow(slice, flow, graph){
     flow.routeDelay = minPath_delay;
 };
 
+/* 最短跳数策略 */
 function minPathFn(flow, graph){
     const startNode = flow.startNode;   //“A”
     const endNode = flow.endNode;       //“D”
@@ -189,7 +190,6 @@ function minPathFn(flow, graph){
         "delay": delay
     };
 }
-
 function BFS(graph, startNode){
     const adjList = graph.adjList;
     const vertices = graph.vertices;
@@ -230,6 +230,7 @@ function BFS(graph, startNode){
         predecessors
     };
 }
+/* 最短跳数策略 */
 
 function orderAllocate(flow, graph, nodeM, nodeN){
     let Calendar = graph.adjList.get(nodeM).get(nodeN).PHYs;
