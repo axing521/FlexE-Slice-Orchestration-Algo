@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-4-21 20:22:49
- * @line_count:297
+ * @modify_time:22-4-22 19:37:7
+ * @line_count:358
  **/
 
 const Colors={
@@ -163,8 +163,8 @@ function allocateFlow(slice, flow, graph){
     flow.routeDelay = minPath_delay;
 };
 
-/* 最短跳数策略 */
-function minPathFn(flow, graph){
+/* 最少跳数策略 */
+/* function minPathFn(flow, graph){
     const startNode = flow.startNode;   //“A”
     const endNode = flow.endNode;       //“D”
     const shortestPathS = BFS(graph, startNode);    //{delay, pred}
@@ -229,8 +229,69 @@ function BFS(graph, startNode){
         delay,
         predecessors
     };
+} */
+/* 最少跳数策略 */
+
+/* 最短加权路径策略 */
+function minPathFn(flow, graph){
+    const vertices = graph.vertices;
+    const adjList = graph.adjList;
+    const n = vertices.length;
+    const startNode = flow.startNode.charCodeAt() - 65;   //“A”
+    const endNode = flow.endNode.charCodeAt() - 65;       //“D”
+
+    let minPaths = Array.from({length: n}, () => [Infinity, null]), visited = new Array(n).fill(false);
+    minPaths[startNode][0] = 0;
+    
+    for(let i = 0; i < n; i++){
+        let u = -1;
+
+        for(let v = 0; v < n; v++){
+            if(!visited[v] && (u == -1 || minPaths[v][0] < minPaths[u][0])){
+                u = v;
+            }
+        }
+
+        visited[u] = true;
+
+        for(let v = 0; v < n; v++){
+            const m = String.fromCharCode(u + 65);
+            const n = String.fromCharCode(v + 65);
+            
+            if(adjList.get(m).get(n) && adjList.get(m).get(n).delay >= 0){
+                if(minPaths[u][0] + adjList.get(m).get(n).delay < minPaths[v][0]){
+                    minPaths[v][0] = minPaths[u][0] + adjList.get(m).get(n).delay;
+                    minPaths[v][1] = u;
+                }
+            }
+        }
+    }
+
+    /* console.log(minPaths); */
+
+    let delay = minPaths[endNode][0];
+
+    const fromVertex = startNode;
+    const toVertex = endNode;
+    const path = [];
+
+    for(let v = toVertex; v != fromVertex; v = minPaths[v][1]){
+        path.push(v);
+    }   //路径不可达?
+
+    path.push(fromVertex);
+
+    let s = String.fromCharCode(path.pop() + 65);
+    while(path.length){
+        s += " -- " + String.fromCharCode(path.pop() + 65);
+    }
+
+    return {
+        "path": s,
+        "delay": delay
+    };
 }
-/* 最短跳数策略 */
+/* 最短加权路径策略 */
 
 function orderAllocate(flow, graph, nodeM, nodeN){
     let Calendar = graph.adjList.get(nodeM).get(nodeN).PHYs;
