@@ -2,16 +2,16 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-4-22 19:37:7
- * @line_count:358
+ * @modify_time:22-5-1 13:58:8
+ * @line_count:383
  **/
 
+/* 0.utils */
 const Colors={
     WHITE:0,
     GREY:1,
     BLACK:2
 }
-
 const initializeColor= vertices => {
     const color={};
     for(let i=0;i<vertices.length;i++){
@@ -19,7 +19,9 @@ const initializeColor= vertices => {
     }
     return color;
 }
+/* 0.utils */
 
+/* 1.图类 */
 class Graph{
     constructor(isDirected = false){  //接收一个参数表示图是否有向，默认无向
         this.isDirected = isDirected;
@@ -67,7 +69,9 @@ class Graph{
         return s;
     }
 }
+/* 1.图类 */
 
+/* 2.实例化图 */
 const graph = new Graph();
 const myVertices = ["A","B","C","D","E","F"];
 
@@ -75,21 +79,23 @@ for(let i=0; i < myVertices.length; i++){
     graph.addVertex(myVertices[i]);
 }
 
-/* 权重单位为ms */
+//权重单位为ms
 graph.addEdge("A","B", 12);
 graph.addEdge("A","C", 8);
 graph.addEdge("B","C", 3);
 graph.addEdge("B","D", 3);
 graph.addEdge("B","E", 5);
 graph.addEdge("C","D", 15);
-graph.addEdge("C","E", 3);
+graph.addEdge("C","E", 8);
 graph.addEdge("D","E", 5);
-graph.addEdge("D","F", 2);
-graph.addEdge("E","F", 3);
+graph.addEdge("D","F", 9);
+graph.addEdge("E","F", 8);
 
 /* console.log(graph.toString());
 console.log(graph.getAdjList()); */
+/* 2.实例化图 */
 
+/* 3.切片输入 */
 const flow0 = {
     bandwidth: 25,
     delay: 20,
@@ -100,6 +106,10 @@ const flow0 = {
 const slice0 = [flow0];
 const slices = [slice0];
 
+let obj = 0; //目标函数(切片占用物理网络资源的总和)
+/* 3.切片输入 */
+
+/* 4.顶层编排 */
 function orchestration(slices){
     let count = 0;
     
@@ -116,11 +126,12 @@ function orchestration(slices){
         }
     }
     
+    console.log(`目标函数值：${obj}`);
     return "切片映射拓扑和链路组占用";
 };
 
 function allocateFlow(slice, flow, graph){
-    const minPath = minPathFn(flow, graph);
+    const minPath = minPathFn(flow, graph); //{path，delay, hopCount}
     const minPath_delay = minPath.delay;
     const flow_delay = flow.delay;
 
@@ -137,7 +148,7 @@ function allocateFlow(slice, flow, graph){
 
         const edgeMN = graph.adjList.get(nodeM).get(nodeN);
 
-        let beforeCapacity = 0;
+        let beforeCapacity = 0; //原有
 
         let Calendar = edgeMN.PHYs;
 
@@ -159,15 +170,18 @@ function allocateFlow(slice, flow, graph){
         orderAllocate(flow, graph, nodeM, nodeN);
     }
 
+    obj += minPath.hopCount * flow.bandwidth;
     flow.path = minPath.path;
     flow.routeDelay = minPath_delay;
 };
+/* 4.顶层编排 */
 
-/* 最少跳数策略 */
-/* function minPathFn(flow, graph){
+/* 5.路由策略 */
+//最少跳数策略
+function minPathFn(flow, graph){
     const startNode = flow.startNode;   //“A”
     const endNode = flow.endNode;       //“D”
-    const shortestPathS = BFS(graph, startNode);    //{delay, pred}
+    const shortestPathS = BFS(graph, startNode);    //{delay, pred, hopCount}
     const fromVertex = startNode;
     const toVertex = endNode;
     const path = [];
@@ -184,10 +198,12 @@ function allocateFlow(slice, flow, graph){
     }
 
     let delay = shortestPathS.delay[endNode];
+    let hopCount = shortestPathS.hopCount[endNode];
 
     return {
         "path": s,
-        "delay": delay
+        "delay": delay,
+        "hopCount": hopCount
     };
 }
 function BFS(graph, startNode){
@@ -196,6 +212,7 @@ function BFS(graph, startNode){
     const color = initializeColor(vertices);
     const queue = [];
     const delay = {};   //v到u的时延delay[u]
+    const hopCount = {};
     const predecessors = {};    //前溯点
 
     queue.push(startNode);
@@ -203,6 +220,7 @@ function BFS(graph, startNode){
     //初始化delay, predecessors
     for(const vertice of vertices){
         delay[vertice] = 0;
+        hopCount[vertice] = 0;
         predecessors[vertice] = null;
     }
 
@@ -216,6 +234,7 @@ function BFS(graph, startNode){
                 color[neighbor] = Colors.GREY;
                 
                 delay[neighbor] = delay[u] + val.delay;
+                hopCount[neighbor] = hopCount[u] + 1;
                 predecessors[neighbor] = u;
 
                 queue.push(neighbor);
@@ -227,13 +246,13 @@ function BFS(graph, startNode){
 
     return {
         delay,
-        predecessors
+        predecessors,
+        hopCount
     };
-} */
-/* 最少跳数策略 */
+}
 
-/* 最短加权路径策略 */
-function minPathFn(flow, graph){
+//最短加权路径策略
+/* function minPathFn(flow, graph){
     const vertices = graph.vertices;
     const adjList = graph.adjList;
     const n = vertices.length;
@@ -267,7 +286,7 @@ function minPathFn(flow, graph){
         }
     }
 
-    /* console.log(minPaths); */
+    //console.log(minPaths);
 
     let delay = minPaths[endNode][0];
 
@@ -290,9 +309,10 @@ function minPathFn(flow, graph){
         "path": s,
         "delay": delay
     };
-}
-/* 最短加权路径策略 */
+} */
+/* 5.路由策略 */
 
+/* 6.时隙分配 */
 function orderAllocate(flow, graph, nodeM, nodeN){
     let Calendar = graph.adjList.get(nodeM).get(nodeN).PHYs;
     let Bf = flow.bandwidth;
@@ -324,7 +344,9 @@ function orderAllocate(flow, graph, nodeM, nodeN){
 
     return 1;
 };
+/* 6.时隙分配 */
 
+/* 7.图重构 */
 function deleteEdge(graph, nodeM, nodeN){
     const MAdjList = graph.adjList.get(nodeM);
     const NAdjList = graph.adjList.get(nodeN);
@@ -334,7 +356,9 @@ function deleteEdge(graph, nodeM, nodeN){
 
     return 2;
 };
+/* 7.图重构 */
 
+/* 8.状态更新 */
 const peekGroup = () => {
     let visited = new Set();
 
@@ -361,6 +385,7 @@ const peekGroup = () => {
 
     console.log(s);
 };
+/* 8.状态更新 */
 
 orchestration(slices); //编排，返回切片是否编排成功，切片中流的传输路由，占用端口时隙情况。
 peekGroup(); //更新目前物理网络资源使用情况
