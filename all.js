@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-5-1 13:58:8
- * @line_count:383
+ * @modify_time:22-5-7 15:49:4
+ * @line_count:414
  **/
 
 /* 0.utils */
@@ -103,8 +103,39 @@ const flow0 = {
     endNode: "D",
     allocate: {}
 }
-const slice0 = [flow0];
-const slices = [slice0];
+const flow1 = {
+    bandwidth: 0.02,
+    delay: 35,
+    startNode : "A",
+    endNode: "D",
+    allocate: {}
+}
+const flow2 = {
+    bandwidth: 35,
+    delay: 26,
+    startNode : "B",
+    endNode: "F",
+    allocate: {}
+}
+const flow3 = {
+    bandwidth: 0.01,
+    delay: 29,
+    startNode : "B",
+    endNode: "C",
+    allocate: {}
+}
+const flow4 = {
+    bandwidth: 15,
+    delay: 23,
+    startNode : "D",
+    endNode: "E",
+    allocate: {}
+}
+
+const slice0 = [flow0, flow1, flow2];
+const slice1 = [flow3, flow4];
+
+const slices = [slice0, slice1];
 
 let obj = 0; //目标函数(切片占用物理网络资源的总和)
 /* 3.切片输入 */
