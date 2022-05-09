@@ -1,8 +1,8 @@
 /***
  * @creater:ACBash
- * @create_time:22-4-21 16:20:36
+ * @create_time:22-5-9 14:57:3
  * @last_modify:ACBash
- * @modify_time:22-5-9 14:55:43
+ * @modify_time:22-5-9 16:19:19
  * @line_count:637
  **/
 
@@ -43,11 +43,11 @@ class Graph{
         }
 
         const uAdjList = this.adjList.get(u);
-        uAdjList.set(v, {"delay": w, "PHYs": Array.from({length: 4}, () => new Array(20).fill(0))});
+        uAdjList.set(v, {"delay": w, "PHYs": Array.from({length: 1}, () => new Array(20).fill(0))});
         
         if(!this.isDirected){
             const uAdjList = this.adjList.get(v);
-            uAdjList.set(u, {"delay": w, "PHYs": Array.from({length: 4}, () => new Array(20).fill(0))});
+            uAdjList.set(u, {"delay": w, "PHYs": Array.from({length: 1}, () => new Array(20).fill(0))});
         }
     }
     getVertices(){
@@ -172,114 +172,114 @@ graph.addEdge("52","54", 3);
 graph.addEdge("53","55", 3);
 graph.addEdge("54","55", 3);
 
-console.log(graph.toString());
-console.log(graph.getAdjList());
+/* console.log(graph.toString());
+console.log(graph.getAdjList()); */
 /* 2.实例化图 */
 
 /* 3.切片输入 */
 const flow0 = {
     bandwidth: 25,
-    delay: 20,
-    startNode : "A",
-    endNode: "D",
+    delay: 30,
+    startNode : "17",
+    endNode: "3",
     allocate: {}
 }
 const flow1 = {
     bandwidth: 0.02,
     delay: 35,
-    startNode : "A",
-    endNode: "D",
+    startNode : "44",
+    endNode: "26",
     allocate: {}
 }
 const flow2 = {
     bandwidth: 35,
     delay: 26,
-    startNode : "B",
-    endNode: "F",
+    startNode : "38",
+    endNode: "23",
     allocate: {}
 }
 const flow3 = {
     bandwidth: 0.01,
     delay: 29,
-    startNode : "B",
-    endNode: "C",
+    startNode : "50",
+    endNode: "8",
     allocate: {}
 }
 const flow4 = {
     bandwidth: 15,
-    delay: 23,
-    startNode : "D",
-    endNode: "E",
+    delay: 33,
+    startNode : "49",
+    endNode: "7",
     allocate: {}
 }
 const flow5 = {
     bandwidth: 0.002,
-    delay: 14,
-    startNode : "B",
-    endNode: "F",
+    delay: 34,
+    startNode : "28",
+    endNode: "41",
     allocate: {}
 }
 const flow6 = {
     bandwidth: 20,
-    delay: 21,
-    startNode : "C",
-    endNode: "F",
+    delay: 31,
+    startNode : "7",
+    endNode: "55",
     allocate: {}
 }
 const flow7 = {
     bandwidth: 50,
     delay: 27,
-    startNode : "F",
-    endNode: "A",
+    startNode : "19",
+    endNode: "9",
     allocate: {}
 }
 const flow8 = {
     bandwidth: 35,
     delay: 75,
-    startNode : "E",
-    endNode: "A",
+    startNode : "32",
+    endNode: "41",
     allocate: {}
 }
 const flow9 = {
     bandwidth: 20,
-    delay: 27,
-    startNode : "A",
-    endNode: "B",
+    delay: 37,
+    startNode : "15",
+    endNode: "19",
     allocate: {}
 }
 const flow10 = {
     bandwidth: 0.05,
     delay: 120,
-    startNode : "C",
-    endNode: "E",
+    startNode : "18",
+    endNode: "9",
     allocate: {}
 }
 const flow11 = {
     bandwidth: 25,
-    delay: 19,
-    startNode : "A",
-    endNode: "E",
+    delay: 39,
+    startNode : "26",
+    endNode: "40",
     allocate: {}
 }
 const flow12 = {
     bandwidth: 0.08,
     delay: 42,
-    startNode : "F",
-    endNode: "A",
+    startNode : "46",
+    endNode: "55",
     allocate: {}
 }
 const flow13 = {
     bandwidth: 10,
     delay: 31,
-    startNode : "F",
-    endNode: "B",
+    startNode : "54",
+    endNode: "7",
     allocate: {}
 }
 const flow14 = {
     bandwidth: 0.6,
     delay: 29,
-    startNode : "C",
-    endNode: "F",
+    startNode : "34",
+    endNode: "41",
     allocate: {}
 }
 //9类典型业务流
@@ -347,18 +347,18 @@ const FLOW8 = {
     allocate: {}
 }   //延迟不敏感大带宽
 
-/* const slice0 = [flow0, flow1, flow2];
+const slice0 = [flow0, flow1, flow2];
 const slice1 = [flow3, flow4];
 
-const slices = [slice0, slice1]; */
+const slices = [slice0, slice1];
 
-const slice0 = [flow5, flow7, flow14];
+/* const slice0 = [flow5, flow7, flow14];
 const slice1 = [flow8];
 const slice2 = [flow9, flow10];
 const slice3 = [flow11];
 const slice4 = [flow12, flow13];
 
-const slices = [slice0, slice1, slice2, slice3, slice4];
+const slices = [slice0, slice1, slice2, slice3, slice4]; */
 
 let obj = 0; //目标函数(切片占用物理网络资源的总和)
 /* 3.切片输入 */
