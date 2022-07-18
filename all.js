@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-5-9 14:55:43
- * @line_count:637
+ * @modify_time:22-7-19 0:34:20
+ * @line_count:633
  **/
 
 /* 0.utils */
@@ -73,7 +73,7 @@ class Graph{
 
 /* 2.实例化图 */
 //小型6节点网络
-/* const graph = new Graph();
+const graph = new Graph();
 const myVertices = ["A","B","C","D","E","F"];
 
 for(let i=0; i < myVertices.length; i++){
@@ -90,10 +90,10 @@ graph.addEdge("C","D", 15);
 graph.addEdge("C","E", 8);
 graph.addEdge("D","E", 5);
 graph.addEdge("D","F", 9);
-graph.addEdge("E","F", 8); */
+graph.addEdge("E","F", 8);
 
 //大型55节点网络
-const graph = new Graph();
+/* const graph = new Graph();
 const myVertices = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20",
                     "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40",
                     "41","42","43","44","45","46","47","48","49","50","51","52","53","54","55"];
@@ -170,7 +170,7 @@ graph.addEdge("51","52", 3);
 graph.addEdge("51","53", 3);
 graph.addEdge("52","54", 3);
 graph.addEdge("53","55", 3);
-graph.addEdge("54","55", 3);
+graph.addEdge("54","55", 3); */
 
 console.log(graph.toString());
 console.log(graph.getAdjList());
@@ -347,19 +347,15 @@ const FLOW8 = {
     allocate: {}
 }   //延迟不敏感大带宽
 
-/* const slice0 = [flow0, flow1, flow2];
-const slice1 = [flow3, flow4];
-
-const slices = [slice0, slice1]; */
-
-const slice0 = [flow5, flow7, flow14];
+/* const slice0 = [flow5, flow7, flow14];
 const slice1 = [flow8];
 const slice2 = [flow9, flow10];
 const slice3 = [flow11];
 const slice4 = [flow12, flow13];
 
-const slices = [slice0, slice1, slice2, slice3, slice4];
-
+const slices = [slice0, slice1, slice2, slice3, slice4]; */
+const slices = [[flow0, flow1, flow2], [flow3, flow4]];
+console.log(slices);
 let obj = 0; //目标函数(切片占用物理网络资源的总和)
 /* 3.切片输入 */
 
