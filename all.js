@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-7-19 0:34:20
- * @line_count:633
+ * @modify_time:22-11-8 21:56:29
+ * @line_count:749
  **/
 
 /* 0.utils */
@@ -177,6 +177,7 @@ console.log(graph.getAdjList());
 /* 2.实例化图 */
 
 /* 3.切片输入 */
+//小型网络
 const flow0 = {
     bandwidth: 25,
     delay: 20,
@@ -282,6 +283,114 @@ const flow14 = {
     endNode: "F",
     allocate: {}
 }
+
+//大型网络
+const fb0 = {
+    bandwidth: 25,
+    delay: 30,
+    startNode : "17",
+    endNode: "3",
+    allocate: {}
+}
+const fb1 = {
+    bandwidth: 0.02,
+    delay: 35,
+    startNode : "44",
+    endNode: "26",
+    allocate: {}
+}
+const fb2 = {
+    bandwidth: 35,
+    delay: 26,
+    startNode : "38",
+    endNode: "23",
+    allocate: {}
+}
+const fb3 = {
+    bandwidth: 0.01,
+    delay: 29,
+    startNode : "50",
+    endNode: "8",
+    allocate: {}
+}
+const fb4 = {
+    bandwidth: 15,
+    delay: 33,
+    startNode : "49",
+    endNode: "7",
+    allocate: {}
+}
+const fb5 = {
+    bandwidth: 0.002,
+    delay: 34,
+    startNode : "28",
+    endNode: "41",
+    allocate: {}
+}
+const fb6 = {
+    bandwidth: 20,
+    delay: 31,
+    startNode : "7",
+    endNode: "55",
+    allocate: {}
+}
+const fb7 = {
+    bandwidth: 50,
+    delay: 27,
+    startNode : "19",
+    endNode: "9",
+    allocate: {}
+}
+const fb8 = {
+    bandwidth: 35,
+    delay: 75,
+    startNode : "32",
+    endNode: "41",
+    allocate: {}
+}
+const fb9 = {
+    bandwidth: 20,
+    delay: 37,
+    startNode : "15",
+    endNode: "19",
+    allocate: {}
+}
+const fb10 = {
+    bandwidth: 0.05,
+    delay: 120,
+    startNode : "18",
+    endNode: "9",
+    allocate: {}
+}
+const fb11 = {
+    bandwidth: 25,
+    delay: 39,
+    startNode : "26",
+    endNode: "40",
+    allocate: {}
+}
+const fb12 = {
+    bandwidth: 0.08,
+    delay: 42,
+    startNode : "46",
+    endNode: "55",
+    allocate: {}
+}
+const fb13 = {
+    bandwidth: 10,
+    delay: 31,
+    startNode : "54",
+    endNode: "7",
+    allocate: {}
+}
+const fb14 = {
+    bandwidth: 0.6,
+    delay: 29,
+    startNode : "34",
+    endNode: "41",
+    allocate: {}
+}
+
 //9类典型业务流
 const FLOW0 = {
     bandwidth: 0.001,
@@ -347,15 +456,22 @@ const FLOW8 = {
     allocate: {}
 }   //延迟不敏感大带宽
 
-/* const slice0 = [flow5, flow7, flow14];
-const slice1 = [flow8];
-const slice2 = [flow9, flow10];
-const slice3 = [flow11];
-const slice4 = [flow12, flow13];
+const slice0 = [fb5, fb7, fb14];
+const slice1 = [fb8];
+const slice2 = [fb9, fb10];
+const slice3 = [fb11];
+const slice4 = [fb12, fb13];
 
-const slices = [slice0, slice1, slice2, slice3, slice4]; */
-const slices = [[flow0, flow1, flow2], [flow3, flow4]];
-console.log(slices);
+
+
+/* const slices = [slice0, slice1, slice2, slice3, slice4]; */
+const slice_1 = [flow1, flow3];
+const slice_2 = [flow2, flow5];
+const slice_3 = [flow4, flow7];
+const slice_4 = [flow9, flow8];
+const slice_5 = [flow0, flow6];
+const slices = [slice_1, slice_2, slice_3, slice_4, slice_5];
+//console.log(slices);
 let obj = 0; //目标函数(切片占用物理网络资源的总和)
 /* 3.切片输入 */
 
@@ -638,4 +754,4 @@ const peekGroup = () => {
 /* 8.状态更新 */
 
 orchestration(slices); //编排，返回切片是否编排成功，切片中流的传输路由，占用端口时隙情况。
-peekGroup(); //更新目前物理网络资源使用情况
+peekGroup(); //更新目前物理网络资源使用情况             
