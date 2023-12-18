@@ -1,0 +1,160 @@
+主函数: sa-re-optimize
+
+C: 当前全局物理网络状态以及业务流信息，Array
+[
+    {
+        group_id: "7-51",
+        Calendar: [
+            [
+                [4.9, false],
+                [0.21, true],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+            ],
+            [
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+            ],
+            [
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+            ],
+            [
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+                [0, false],
+            ],
+        ],
+        Se_max: 2,
+        F: [
+            {
+                f_id: "f1",
+                f_bandwidth: 0.1,
+                f_delay: 33,
+                f_startNode: "38",
+                f_endNode: "27",
+                f_allocate: {},
+            },
+            {
+                f_id: "f2",
+                f_bandwidth: 0.1,
+                f_delay: 33,
+                f_startNode: "38",
+                f_endNode: "27",
+                f_allocate: {},
+            },
+            {
+                f_id: "f3",
+                f_bandwidth: 0.1,
+                f_delay: 33,
+                f_startNode: "38",
+                f_endNode: "27",
+                f_allocate: {},
+            },
+            {
+                f_id: "f4",
+                f_bandwidth: 0.1,
+                f_delay: 33,
+                f_startNode: "38",
+                f_endNode: "27",
+                f_allocate: {},
+            },
+        ],
+    },
+];
+
+itMax: 最大迭代次数，Number
+
+itTemp: 每个温度值要执行的迭代次数，Number
+
+T0: 初始温度，Number
+
+rho: 冷却速率，Number
+
+---
+
+iterations: 迭代栈序列，以温度为索引，Map
+
+T: 温度，Number
+
+action_sequence: 动作序列，Array
+
+best_sequence: 最佳动作序列，Array
+
+best_state: 最佳状态，Array
+
+current_state: 当前状态，Array
+
+------
+
+1.calculate_RMSF: 能量函数（问题模型优化目标---均方根碎片化度量指标 F_RMSF）
+

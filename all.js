@@ -2,8 +2,8 @@
  * @creater:ACBash
  * @create_time:22-4-21 16:20:36
  * @last_modify:ACBash
- * @modify_time:22-11-8 21:56:29
- * @line_count:749
+ * @modify_time:22-11-27 19:1:54
+ * @line_count:937
  **/
 
 /* 0.utils */
@@ -73,7 +73,7 @@ class Graph{
 
 /* 2.实例化图 */
 //小型6节点网络
-const graph = new Graph();
+/* const graph = new Graph();
 const myVertices = ["A","B","C","D","E","F"];
 
 for(let i=0; i < myVertices.length; i++){
@@ -90,10 +90,10 @@ graph.addEdge("C","D", 15);
 graph.addEdge("C","E", 8);
 graph.addEdge("D","E", 5);
 graph.addEdge("D","F", 9);
-graph.addEdge("E","F", 8);
+graph.addEdge("E","F", 8); */
 
 //大型55节点网络
-/* const graph = new Graph();
+const graph = new Graph();
 const myVertices = ["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20",
                     "21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40",
                     "41","42","43","44","45","46","47","48","49","50","51","52","53","54","55"];
@@ -170,7 +170,7 @@ graph.addEdge("51","52", 3);
 graph.addEdge("51","53", 3);
 graph.addEdge("52","54", 3);
 graph.addEdge("53","55", 3);
-graph.addEdge("54","55", 3); */
+graph.addEdge("54","55", 3);
 
 console.log(graph.toString());
 console.log(graph.getAdjList());
@@ -470,14 +470,189 @@ const slice_2 = [flow2, flow5];
 const slice_3 = [flow4, flow7];
 const slice_4 = [flow9, flow8];
 const slice_5 = [flow0, flow6];
-const slices = [slice_1, slice_2, slice_3, slice_4, slice_5];
+/* const slices = [slice_1, slice_2, slice_3, slice_4, slice_5]; */
+/* const slices = [slice1, slice2, slice3, slice4, slice0]; */
 //console.log(slices);
+
+/**
+ * 多粒度测试
+ */
+
+//流模拟
+const fD1 = {
+    bandwidth: 1,
+    delay: 16,
+    startNode : "7",
+    endNode: "54",
+    allocate: {}
+}
+const fD2 = {
+    bandwidth: 0.1,
+    delay: 34,
+    startNode : "17",
+    endNode: "46",
+    allocate: {}
+}
+const fD3 = {
+    bandwidth: 5,
+    delay: 21,
+    startNode : "23",
+    endNode: "39",
+    allocate: {}
+}
+const fD4= {
+    bandwidth: 0.1,
+    delay: 33,
+    startNode : "38",
+    endNode: "27",
+    allocate: {}
+}
+const fD5 = {
+    bandwidth: 0.01,
+    delay: 33,
+    startNode : "24",
+    endNode: "42",
+    allocate: {}
+}
+const fD6 = {
+    bandwidth: 0.01,
+    delay: 17,
+    startNode : "36",
+    endNode: "22",
+    allocate: {}
+}
+const fD7 = {
+    bandwidth: 5,
+    delay: 37,
+    startNode : "13",
+    endNode: "18",
+    allocate: {}
+}
+const fD8 = {
+    bandwidth: 0.1,
+    delay: 35,
+    startNode : "19",
+    endNode: "15",
+    allocate: {}
+}
+const fD9 = {
+    bandwidth: 1,
+    delay: 26,
+    startNode : "49",
+    endNode: "3",
+    allocate: {}
+}
+const fD10 = {
+    bandwidth: 1,
+    delay: 32,
+    startNode : "9",
+    endNode: "52",
+    allocate: {}
+}
+const fD11 = {
+    bandwidth: 1,
+    delay: 27,
+    startNode : "6",
+    endNode: "53",
+    allocate: {}
+}
+const fD12 = {
+    bandwidth: 1,
+    delay: 18,
+    startNode : "11",
+    endNode: "51",
+    allocate: {}
+}
+const fD13 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD14 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD15 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD16 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD17 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD18 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD19 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD20 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD21 = {
+    bandwidth: 0.1,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+const fD22 = {
+    bandwidth: 0.01,
+    delay: 9,
+    startNode : "7",
+    endNode: "51",
+    allocate: {}
+}
+
+
+//多粒度切片请求模拟
+const sliceD1 = [fD1, fD2, fD3];
+const sliceD2 = [fD4, fD5];
+const sliceD3 = [fD6, fD7, fD8, fD9];
+const sliceD4 = [fD10, fD11, fD12];
+const sliceD5 = [fD13, fD14, fD15, fD16, fD17, fD18, fD19, fD20, fD21];
+
+const sliceD6 = [fD22];
+
+//切片请求集合
+const slices = [sliceD1, sliceD2, sliceD3, sliceD4, sliceD5, sliceD6];
+
 let obj = 0; //目标函数(切片占用物理网络资源的总和)
 /* 3.切片输入 */
 
 /* 4.顶层编排 */
 function orchestration(slices){
-    let count = 0;
+    let count = 1;
     
     for(const slice of slices){
         for(const flow of slice){
@@ -691,8 +866,21 @@ function orderAllocate(flow, graph, nodeM, nodeN){
     for(let i = 0; i < Calendar.length; i++){
         for(let j = 0; j < Calendar[0].length; j++){
             if(Calendar[i][j] != 5){
-                const idleCapacity = 5 - Calendar[i][j];
+                //判断是否是10M小颗粒
+                if(Bf == 0.01){
+                    //是10M小颗粒，那么不能通过普通的时隙分片，需要进行帧结构设计
+                    Calendar[i][j] += 0.2;  //增加帧结构开销
+
+                    //判断小颗粒帧结构是否超出原有5G时隙，或者将不能用于下一个小颗粒时隙的插入
+                    if(Calendar[i][j] > 4.99){
+                        //小颗粒帧结构不满足要求，不能划分10M小颗粒
+                        Calendar[i][j] -= 0.2;  //撤销帧结构开销
+                        continue;               //继续顺序分配，寻找下一个可分配可插入的时隙
+                    }
+                }
                 
+                const idleCapacity = 5 - Calendar[i][j];
+
                 if(Bf <= idleCapacity){
                     Calendar[i][j] += Bf;
                     allocate.get(`PHY${i}`).push(`${j}`);
