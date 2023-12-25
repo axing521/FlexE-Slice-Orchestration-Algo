@@ -186,50 +186,6 @@ function _reconfig_action(signal = 1, current_slot_index, target_slot_index, f) 
 }
 
 function select_neighbor(current_state, delta, T) {
-    const Ep_size = current_state.length; // |Ep|
-
-    for (let i = 0; i < Ep_size; i++) {
-        let F = current_state[i].F;
-        let F_size = F.length;
-        let action_spec = {};
-        let action = Math.floor(Math.random() * 3);
-        let f_id = Math.floor(Math.random() * F_size);
-        let f = F[f_id];
-
-        switch (action) {
-            case 0:
-                action_spec = {
-                    action: "add",
-                    f_id: f.f_id,
-                    f_startNode: f.f_startNode,
-                    f_endNode: f.f_endNode,
-                    f_bandwidth: f.f_bandwidth,
-                    f_delay: f.f_delay,
-                };
-                break;
-            case 1:
-                action_spec = {
-                    action: "delete",
-                    f_id: f.f_id,
-                    f_startNode: f.f_startNode,
-                    f_endNode: f.f_endNode,
-                    f_bandwidth: f.f_bandwidth,
-                    f_delay: f.f_delay,
-                };
-                break;
-            case 2:
-                action_spec = {
-                    action: "change",
-                    f_id: f.f_id,
-                    f_startNode: f.f_startNode,
-                    f_endNode: f.f_endNode,
-                    f_bandwidth: f.f_bandwidth,
-                    f_delay: f.f_delay,
-                };
-                break;
-        }
-    }
-
     // choose a random traffic flow random_f from current_state
     let randomG = current_state[Math.floor(Math.random() * current_state.length)];
     let randomF = randomG.F;
