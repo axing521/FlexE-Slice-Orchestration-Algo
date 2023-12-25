@@ -281,6 +281,19 @@ function generate_neighbors(f, state, gId) {
                 }
                 if (flag0 == true) break;
             }
+            let newSemax = 0;
+            for (const val of neighbor) {
+                if (val.group_id === gId) {
+                    for (let i = 0; i < val.Calendar.length; i++) {
+                        for (let j = 0; j < val.Calendar[i].length; j++) {
+                            if (val.Calendar[i][j][0] != 0) {
+                                newSemax = i * 20 + j + 1;
+                            }
+                        }
+                    }
+                    val.Se_max = newSemax;
+                }
+            }
             neighbors.push(neighbor);
         } else if (action === "mergeNormal") {
             if (f_bandwidth === 0.01) continue;
@@ -372,6 +385,19 @@ function generate_neighbors(f, state, gId) {
                     }
                 }
                 if (flag0 == true) break;
+            }
+            let newSemax = 0;
+            for (const val of neighbor) {
+                if (val.group_id === gId) {
+                    for (let i = 0; i < val.Calendar.length; i++) {
+                        for (let j = 0; j < val.Calendar[i].length; j++) {
+                            if (val.Calendar[i][j][0] != 0) {
+                                newSemax = i * 20 + j + 1;
+                            }
+                        }
+                    }
+                    val.Se_max = newSemax;
+                }
             }
             neighbors.push(neighbor);
         } else if (action === "moveSlotIDXOnly") {
@@ -466,6 +492,19 @@ function generate_neighbors(f, state, gId) {
                 if (flag0 == true) break;
             }
 
+            let newSemax = 0;
+            for (const val of neighbor) {
+                if (val.group_id === gId) {
+                    for (let i = 0; i < val.Calendar.length; i++) {
+                        for (let j = 0; j < val.Calendar[i].length; j++) {
+                            if (val.Calendar[i][j][0] != 0) {
+                                newSemax = i * 20 + j + 1;
+                            }
+                        }
+                    }
+                    val.Se_max = newSemax;
+                }
+            }
             neighbors.push(neighbor);
         }
     }
