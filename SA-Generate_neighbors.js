@@ -91,7 +91,7 @@ const _current_state = [
                 [0, false],
             ],
         ],
-        Se_max: 2,
+        Se_max: 3,
         F: [
             {
                 f_id: "f1",
