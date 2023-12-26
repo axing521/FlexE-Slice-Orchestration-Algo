@@ -196,26 +196,32 @@ function select_neighbor(current_state, delta, T) {
     // all_neighbors = Generate all feasible neighbor states by applying three diffrent actions on traffic flow F
     let all_neighbors = [];
     all_neighbors = generate_neighbors(random_f, current_state, randomG.group_id);
+    let all_real_neighbors = [];
+    let actionMap = new Map();
+    for (const tuple of all_neighbors) {
+        all_real_neighbors.push(tuple[0]);
+        actionMap.set(tuple[0], tuple[1]);
+    }
     // exclude neighbor states from all_neighbors that uses more than delta% additional slots compared to current_state
-    let trimmed_neighbors = exclude_neighbors(all_neighbors, current_state, delta);
+    let trimmed_neighbors = exclude_neighbors(all_real_neighbors, current_state, delta);
     // sort the neighbors in trimmed_neighbors in increasing order of their RMSF
     let sorted_neighbors = sort_neighbors(trimmed_neighbors);
     // select the first T% neighbors from sorted_neighbors
     let neighbors_pool = sorted_neighbors.slice(0, Math.floor(sorted_neighbors.length * T) + 1);
     // calulate the maximum value of RMSF among the neighbors in neighbors_pool
     let max_RMSF = calculate_max_RMSF(neighbors_pool);
-    let gain = {};
+    let gain = new Map();
 
     for (const neighbor of neighbors_pool) {
-        gain[neighbor.id] = (calculate_RMSF(neighbor) - max_RMSF) ** 2;
+        gain.set(neighbor, (calculate_RMSF(neighbor) - max_RMSF) ** 2);
     }
 
     // <neighbor, action_spec> = a neighbor from neighbors_pool with a probability proportional to gain[neighbor] and corresponding action_spec
-    const [neighbor, action_spec] = select_neighbor_by_gain(neighbors_pool, gain);
-    return [neighbor, action_spec];
+    const neighbor = select_neighbor_by_gain(neighbors_pool, gain);
+    return [neighbor, actionMap.get(neighbor)];
 }
 
-function sa_re_optimize(C, itMax, itTemp, T0, rho) {
+function sa_re_optimize(C, itMax, itTemp, T0, rho, delta, tao) {
     let iterations = new Map([[T0, []]]);
     let T = T0;
     let action_sequence = [];
@@ -227,7 +233,7 @@ function sa_re_optimize(C, itMax, itTemp, T0, rho) {
         while (iterations[T].length < itTemp) {
             let current_cost = calculate_RMSF(current_state);
             let best_cost = calculate_RMSF(best_state);
-            let [new_state, action_spec] = select_neighbor(current_state, _delta, _T);
+            let [new_state, action_spec] = select_neighbor(current_state, _delta, tao);
             let new_cost = calculate_RMSF(new_state);
             let delta_cost = current_cost - new_cost;
             let p = Math.random();
@@ -369,7 +375,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push(neighbor, "mergeFGU");
         } else if (action === "mergeNormal") {
             if (f_bandwidth === 0.01) continue;
             let neighbor = JSON.parse(JSON.stringify(state));
@@ -474,7 +480,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push(neighbor, "mergeNormal");
         } else if (action === "moveSlotIDXOnly") {
             let neighbor = JSON.parse(JSON.stringify(state));
 
@@ -580,7 +586,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push([neighbor, "moveSlotIDXOnly"]);
         }
     }
     return neighbors;
@@ -606,7 +612,7 @@ function exclude_neighbors(neighbors, current_state, delta) {
 
     for (const neighbor of neighbors) {
         const neighbor_slotsUsage = calculate_slotsUsage(neighbor);
-        if (neighbor_slotsUsage <= ((1 + delta) * current_slotsUsage)) {
+        if (neighbor_slotsUsage <= (1 + delta) * current_slotsUsage) {
             ans.push(neighbor);
         }
     }
@@ -662,4 +668,27 @@ function calculate_RMSF(state) {
     return F_RMSF_net;
 }
 
-function select_neighbor_by_gain() {}
+function select_neighbor_by_gain(pool, gain) {
+    // 计算总的权重
+    let totalWeight = 0;
+    for (let neighbor of pool) {
+        totalWeight += gain.get(neighbor);
+    }
+
+    // 生成随机数，范围是 [0, totalWeight)
+    const random = Math.random() * totalWeight;
+
+    // 根据随机数选择一个neighbor
+    let cumulativeWeight = 0;
+    for (let neighbor of pool) {
+        cumulativeWeight += gain.get(neighbor);
+        if (random < cumulativeWeight) {
+            return neighbor; // 返回选择的neighbor
+        }
+    }
+
+    // 如果没有成功选择neighbor，则返回 null 或者抛出异常
+    return null;
+}
+
+console.log(sa_re_optimize(_current_state, 1, 2, 100, 0.2, _delta, _T));

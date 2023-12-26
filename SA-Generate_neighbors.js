@@ -294,7 +294,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push(neighbor, "mergeFGU");
         } else if (action === "mergeNormal") {
             if (f_bandwidth === 0.01) continue;
             let neighbor = JSON.parse(JSON.stringify(state));
@@ -399,7 +399,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push(neighbor, "mergeNormal");
         } else if (action === "moveSlotIDXOnly") {
             let neighbor = JSON.parse(JSON.stringify(state));
 
@@ -505,14 +505,14 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor);
+            neighbors.push([neighbor, "moveSlotIDXOnly"]);
         }
     }
     return neighbors;
 }
 
 const neighbors = generate_neighbors(random_f, _current_state, random_gId);
-for (const neighbor of neighbors) {
+for (const [neighbor, action] of neighbors) {
     for (const g of neighbor) {
         console.log(g.group_id);
         console.log(g.Calendar);
