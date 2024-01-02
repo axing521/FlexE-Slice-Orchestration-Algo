@@ -1,6 +1,6 @@
-/* let iterations = new Map([["T0", []]]);
+let iterations = new Map([["T0", []]]);
 
-console.log(iterations.size);
+console.log(iterations);
 
 let a = {
     1: 2,
@@ -78,9 +78,8 @@ console.log(map1);
 for (const val of arr1) {
     console.log(map1.get(val));
 }
- */
 
-function select_neighbor_by_gain(pool, gain) {
+/* function select_neighbor_by_gain(pool, gain) {
     // 计算总的权重
     let totalWeight = 0;
     for (let neighbor of pool) {
@@ -110,4 +109,4 @@ gain.set("neighbor2", 0.6);
 gain.set("neighbor3", 0.1);
 
 const selectedNeighbor = select_neighbor_by_gain(pool, gain);
-console.log(selectedNeighbor);
+console.log(selectedNeighbor); */

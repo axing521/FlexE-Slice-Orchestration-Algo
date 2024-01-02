@@ -294,7 +294,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor, "mergeFGU");
+            neighbors.push([neighbor, "mergeFGU"]);
         } else if (action === "mergeNormal") {
             if (f_bandwidth === 0.01) continue;
             let neighbor = JSON.parse(JSON.stringify(state));
@@ -399,7 +399,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor, "mergeNormal");
+            neighbors.push([neighbor, "mergeNormal"]);
         } else if (action === "moveSlotIDXOnly") {
             let neighbor = JSON.parse(JSON.stringify(state));
 
@@ -513,9 +513,49 @@ function generate_neighbors(f, state, gId) {
 
 const neighbors = generate_neighbors(random_f, _current_state, random_gId);
 for (const [neighbor, action] of neighbors) {
+    // console.log(neighbor);
     for (const g of neighbor) {
-        console.log(g.group_id);
-        console.log(g.Calendar);
-        console.log(g.F);
+        // console.log(g.group_id);
+        // console.log(g.Calendar);
+        // console.log(g.F);
+        console.log(g.Se_max);
     }
+    console.log(calculate_RMSF(neighbor), "done");
+}
+
+function calculate_RMSF(state) {
+    // console.log(state, "done");
+    const s_mod = 80;
+    const E_p = 68;
+    let s_max = 0;
+    let F_RMSF_net = 0;
+
+    for (const group of state) {
+        const { group_id, Calendar, Se_max, F } = group;
+        let F_RMSF_e = 0;
+        let F_g_mod = 0;
+        let Bf_Sum = 0;
+
+        // 用的是Calendar计算F_g_mod而不是F，能够说明小颗粒会增加RMSF
+        for (let PHY of Calendar) {
+            for (let slot = 0; slot < PHY.length; slot++) {
+                F_g_mod += PHY[slot][0];
+            }
+        }
+
+        for (let f of F) {
+            Bf_Sum += f.f_bandwidth ** 2;
+        }
+        Bf_Sum = Math.sqrt(Bf_Sum);
+
+        F_RMSF_e = (Se_max * F_g_mod) / Bf_Sum;
+
+        F_RMSF_net += F_RMSF_e;
+
+        s_max = Math.max(s_max, Se_max);
+    }
+
+    F_RMSF_net = (F_RMSF_net * s_max) / (E_p * s_mod);
+
+    return F_RMSF_net;
 }

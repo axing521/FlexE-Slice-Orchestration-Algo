@@ -1,5 +1,5 @@
 // 算法参数
-const [_delta, _T] = [0.1, 0.2];
+const [_delta, _T] = [0.1, 0.8];
 
 // current_state记录全局物理网络状态以及业务流信息
 const _current_state = [
@@ -196,16 +196,29 @@ function select_neighbor(current_state, delta, T) {
     // all_neighbors = Generate all feasible neighbor states by applying three diffrent actions on traffic flow F
     let all_neighbors = [];
     all_neighbors = generate_neighbors(random_f, current_state, randomG.group_id);
+
     let all_real_neighbors = [];
     let actionMap = new Map();
     for (const tuple of all_neighbors) {
         all_real_neighbors.push(tuple[0]);
         actionMap.set(tuple[0], tuple[1]);
     }
+    // console.log(all_real_neighbors, "done5");
     // exclude neighbor states from all_neighbors that uses more than delta% additional slots compared to current_state
     let trimmed_neighbors = exclude_neighbors(all_real_neighbors, current_state, delta);
+    /* for (const [neighbor, action] of all_neighbors) {
+        // console.log(neighbor);
+        for (const g of neighbor) {
+            // console.log(g.group_id);
+            // console.log(g.Calendar);
+            // console.log(g.F);
+            console.log(g.Se_max);
+        }
+        console.log(calculate_RMSF(neighbor), "donex");
+    } */
     // sort the neighbors in trimmed_neighbors in increasing order of their RMSF
     let sorted_neighbors = sort_neighbors(trimmed_neighbors);
+    // console.log(sorted_neighbors, "done4");
     // select the first T% neighbors from sorted_neighbors
     let neighbors_pool = sorted_neighbors.slice(0, Math.floor(sorted_neighbors.length * T) + 1);
     // calulate the maximum value of RMSF among the neighbors in neighbors_pool
@@ -213,11 +226,14 @@ function select_neighbor(current_state, delta, T) {
     let gain = new Map();
 
     for (const neighbor of neighbors_pool) {
-        gain.set(neighbor, (calculate_RMSF(neighbor) - max_RMSF) ** 2);
+        // console.log(calculate_RMSF(neighbor), max_RMSF, "done8");
+        gain.set(neighbor, (calculate_RMSF(neighbor) - max_RMSF) ** 2 + 1);
     }
 
     // <neighbor, action_spec> = a neighbor from neighbors_pool with a probability proportional to gain[neighbor] and corresponding action_spec
     const neighbor = select_neighbor_by_gain(neighbors_pool, gain);
+    // console.log(neighbors_pool, gain, "done3");
+    // console.log(neighbor, "done2");
     return [neighbor, actionMap.get(neighbor)];
 }
 
@@ -230,10 +246,11 @@ function sa_re_optimize(C, itMax, itTemp, T0, rho, delta, tao) {
     let current_state = C;
 
     while (iterations.size <= itMax) {
-        while (iterations[T].length < itTemp) {
+        while (iterations.get(T).length < itTemp) {
             let current_cost = calculate_RMSF(current_state);
             let best_cost = calculate_RMSF(best_state);
-            let [new_state, action_spec] = select_neighbor(current_state, _delta, tao);
+            let [new_state, action_spec] = select_neighbor(current_state, delta, tao);
+            // console.log(new_state, "done1");
             let new_cost = calculate_RMSF(new_state);
             let delta_cost = current_cost - new_cost;
             let p = Math.random();
@@ -249,14 +266,16 @@ function sa_re_optimize(C, itMax, itTemp, T0, rho, delta, tao) {
                 best_sequence = action_sequence;
             }
 
-            iterations[T].push([current_state, current_cost, action_sequence]);
+            // iterations[T].push([current_state, current_cost, action_sequence]);
+            iterations.get(T).push([current_state, current_cost, action_sequence]);
+            // console.log(iterations, "done");
         }
 
         T = rho * T;
         iterations.set(T, []);
     }
 
-    return [best_state, best_sequence];
+    return [iterations, best_state, best_sequence];
 }
 
 function generate_neighbors(f, state, gId) {
@@ -375,7 +394,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor, "mergeFGU");
+            neighbors.push([neighbor, "mergeFGU"]);
         } else if (action === "mergeNormal") {
             if (f_bandwidth === 0.01) continue;
             let neighbor = JSON.parse(JSON.stringify(state));
@@ -480,7 +499,7 @@ function generate_neighbors(f, state, gId) {
                     val.Se_max = newSemax;
                 }
             }
-            neighbors.push(neighbor, "mergeNormal");
+            neighbors.push([neighbor, "mergeNormal"]);
         } else if (action === "moveSlotIDXOnly") {
             let neighbor = JSON.parse(JSON.stringify(state));
 
@@ -606,9 +625,11 @@ function exclude_neighbors(neighbors, current_state, delta) {
                 }
             }
         }
+        return slotsUsage;
     }
 
     const current_slotsUsage = calculate_slotsUsage(current_state);
+    // console.log(current_slotsUsage, "done6");
 
     for (const neighbor of neighbors) {
         const neighbor_slotsUsage = calculate_slotsUsage(neighbor);
@@ -629,10 +650,11 @@ function sort_neighbors(trimmed) {
 
 function calculate_max_RMSF(pool) {
     const lastone = pool[pool.length - 1];
-    return calculate_RMSF(lastone);
+    if (lastone) return calculate_RMSF(lastone);
 }
 
 function calculate_RMSF(state) {
+    // console.log(state, "done");
     const s_mod = 80;
     const E_p = 68;
     let s_max = 0;
@@ -669,6 +691,7 @@ function calculate_RMSF(state) {
 }
 
 function select_neighbor_by_gain(pool, gain) {
+    // console.log(pool, gain, "done7");
     // 计算总的权重
     let totalWeight = 0;
     for (let neighbor of pool) {
@@ -691,4 +714,17 @@ function select_neighbor_by_gain(pool, gain) {
     return null;
 }
 
-console.log(sa_re_optimize(_current_state, 1, 2, 100, 0.2, _delta, _T));
+const [iterations, best_state, best_sequence] = sa_re_optimize(
+    _current_state,
+    10,
+    2,
+    100,
+    0.2,
+    _delta,
+    _T
+);
+console.log(`退火迭代序列: ${iterations}`, iterations);
+console.log(`最优状态: ${best_state}`, best_state);
+console.log(`最优状态的RMSF: ${calculate_RMSF(best_state)}`);
+console.log(`最优状态的动作序列: ${best_sequence}`);
+console.log(`最优状态的Calendar样例: ${best_state[0].Calendar}`);
